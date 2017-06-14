@@ -1,0 +1,23 @@
+{
+  "name": "screen_share",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint ./src",
+    "dev:build": "webpack -w",
+    "dev": "NODE_ENV=development nodemon dist/index.bundle.js"
+  },
+  "dependencies": {
+    "express": "^4.15.3"
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.0.0",
+    "babel-preset-env": "^1.5.2",
+    "eslint": "^4.0.0",
+    "nodemon": "^1.11.0",
+    "webpack": "^2.6.1",
+    "webpack-node-externals": "^1.6.0"
+  }
+}
