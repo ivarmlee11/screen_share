@@ -1,7 +1,7 @@
 const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 
-module.exports = {
+const serverConfig = {
   target: 'node',
   externals: [nodeExternals()],
   entry: {
@@ -22,3 +22,26 @@ module.exports = {
     ],
   },
 }
+
+const clientConfig = {
+  target: 'node',
+  entry: {
+    'app': './public/js/app.js',
+  },
+  output: {
+    path: path.join(__dirname, 'public/bundled'),
+    filename: '[name].bundle.js'
+    // libraryTarget: 'commonjs2',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: 'babel-loader',
+      },
+    ],
+  },
+}
+
+module.exports = [ serverConfig, clientConfig ];

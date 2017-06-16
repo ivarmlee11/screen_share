@@ -1,4 +1,3 @@
-module.exports =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -64,50 +63,17 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
-
-module.exports = require("express");
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _express = __webpack_require__(0);
-
-var _express2 = _interopRequireDefault(_express);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const app = (0, _express2.default)();
-
-const PORT = process.env.PORT || 3000;
-
-app.use(_express2.default.static('public'));
-
-app.get('/', (req, res) => {
-	res.render('/index.html');
-});
-
-app.listen(PORT, err => {
-	if (err) {
-		throw err;
-	} else {
-		// console.log(`
-		// 	server running on ${PORT}
-		// 	-----
-		// 	running on ${process.env.NODE_ENV}
-		// 	----- 
-		// `)
-	}
-});
+console.log('hello');
 
 /***/ })
 /******/ ]);
