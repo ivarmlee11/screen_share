@@ -96,7 +96,7 @@ chrome.runtime.onConnect.addListener(function (port) {
   // on getting sourceId
   // "sourceId" will be empty if permission is denied.
   function onAccessApproved(sourceId) {
-    // if "cancel" button is clicked
+
     if (!sourceId || !sourceId.length) {
       return port.postMessage('PermissionDeniedError');
     }

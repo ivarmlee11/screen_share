@@ -6,8 +6,7 @@
   "minimum_chrome_version": "34",
   "description" : "Free screen sharing extension",
   "background": {
-    "scripts": ["bundled/background-script.bundle.js"],
-    "persistent": false
+    "scripts": ["bundled/background-script.bundle.js"]
   },
   "browser_action": {
     "default_icon": "./icon/eye16.png",
@@ -19,7 +18,7 @@
      "js": [ "bundled/content-script.bundle.js" ],
      "all_frames": true,
      "run_at": "document_end",
-     "matches": ["https://freescreenshare.herokuapp.com/"]
+     "matches": ["https://freescreenshare.herokuapp.com"]
     }
   ],
   "icons" : {
