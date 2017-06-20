@@ -7,15 +7,16 @@ isChromeExtensionAvailable((isAvailable) => {
   }
 });
 
-getSourceId(function(sourceId) {
+getSourceId((sourceId) => {
 
-  console.log(sourceId);
+  console.log(`source id ${sourceId}`);
 
   if(sourceId != 'PermissionDeniedError') {
 
-    getScreenConstraints(function(error, screen_constraints) {
+    getScreenConstraints((error, screen_constraints) => {
       if (error) {
-          console.log(error);
+        console.log('error');
+        console.log(error);
       }
 
       navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -23,6 +24,11 @@ getSourceId(function(sourceId) {
       navigator.getUserMedia({
 
         video: {
+          audio: true,
+          video: {
+            width: { min: 1024, ideal: 1280, max: 1920 },
+            height: { min: 776, ideal: 720, max: 1080 }
+          },
           deviceId: {
             exact: [sourceId],
           },
@@ -31,13 +37,14 @@ getSourceId(function(sourceId) {
           }
         }
 
-      }, function(stream) {
-          console.log(stream);
-          var video = document.getElementById('video');
-          video.src = URL.createObjectURL(stream);
-          video.play();
-      }, function(error) {
-          console.log(error);
+      }, (stream) => {
+        console.log('stream');
+        console.log(stream);
+        var video = document.getElementById('video');
+        video.src = URL.createObjectURL(stream);
+        video.play();
+      }, (error) => {
+        console.log(error);
       });
     });
 
