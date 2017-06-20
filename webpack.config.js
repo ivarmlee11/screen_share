@@ -71,7 +71,6 @@ const chromeExtensionBackgroundScriptConfig = {
   output: {
     path: path.join(__dirname, 'extchrome/bundled'),
     filename: '[name].bundle.js',
-    libraryTarget: 'commonjs2',
   },
   module: {
     rules: [

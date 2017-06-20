@@ -23,12 +23,6 @@ getSourceId(function(sourceId) {
       navigator.getUserMedia({
 
         video: {
-            width: {
-              max: 1920,
-            },
-            height: {
-              max: 1080,
-            },
             frameRate: { 
               max: 10,
             },
