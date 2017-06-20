@@ -98,9 +98,6 @@ getSourceId(function (sourceId) {
       navigator.getUserMedia({
 
         video: {
-          frameRate: {
-            max: 10
-          },
           deviceId: {
             exact: [sourceId]
           },

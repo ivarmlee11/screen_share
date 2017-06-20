@@ -23,16 +23,13 @@ getSourceId(function(sourceId) {
       navigator.getUserMedia({
 
         video: {
-            frameRate: { 
-              max: 10,
-            },
-            deviceId: {
-              exact: [sourceId],
-            },
-            mediaStreamSource: {
-              exact: ['desktop'],
-            }
+          deviceId: {
+            exact: [sourceId],
+          },
+          mediaStreamSource: {
+            exact: ['desktop'],
           }
+        }
 
       }, function(stream) {
           console.log(stream);
