@@ -23,19 +23,7 @@ getSourceId((sourceId) => {
      
       navigator.getUserMedia({
 
-        video: {
-          audio: true,
-          video: {
-            width: { min: 1024, ideal: 1280, max: 1920 },
-            height: { min: 776, ideal: 720, max: 1080 }
-          },
-          deviceId: {
-            exact: [sourceId],
-          },
-          mediaStreamSource: {
-            exact: ['desktop'],
-          }
-        }
+        video: screen_constraints
 
       }, (stream) => {
         console.log('stream');
