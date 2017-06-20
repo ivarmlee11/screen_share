@@ -24,14 +24,13 @@ const serverConfig = {
 }
 
 const clientConfig = {
-  target: 'node',
+  target: 'web',
   entry: {
-    'app': './public/js/app.js',
+    'app': ['./public/js/app.js']
   },
   output: {
     path: path.join(__dirname, 'public/bundled'),
-    filename: '[name].bundle.js'
-    // libraryTarget: 'commonjs2',
+    filename: '[name].bundle.js',
   },
   module: {
     rules: [
@@ -44,4 +43,45 @@ const clientConfig = {
   },
 }
 
-module.exports = [ serverConfig, clientConfig ];
+const chromeExtensionContentScriptConfig = {
+  target: 'web',
+  entry: {
+    'content-script': ['./extchrome/js/content-script.js']
+  },
+  output: {
+    path: path.join(__dirname, 'extchrome/bundled'),
+    filename: '[name].bundle.js',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: 'babel-loader',
+      },
+    ],
+  },
+}
+
+const chromeExtensionBackgroundScriptConfig = {
+  target: 'web',
+  entry: {
+    'background-script': ['./extchrome/js/background-script.js']
+  },
+  output: {
+    path: path.join(__dirname, 'extchrome/bundled'),
+    filename: '[name].bundle.js',
+    libraryTarget: 'commonjs2',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: 'babel-loader',
+      },
+    ],
+  },
+}
+
+module.exports = [ serverConfig, clientConfig, chromeExtensionContentScriptConfig, chromeExtensionBackgroundScriptConfig ];
