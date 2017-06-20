@@ -8,11 +8,14 @@ isChromeExtensionAvailable((isAvailable) => {
 });
 
 getSourceId(function(sourceId) {
+
+  console.log(sourceId);
+
   if(sourceId != 'PermissionDeniedError') {
 
     getScreenConstraints(function(error, screen_constraints) {
       if (error) {
-          return alert(error);
+          console.log(error);
       }
 
       navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -38,11 +41,12 @@ getSourceId(function(sourceId) {
           }
 
       }, function(stream) {
-          var video = document.querySelector('video');
+          console.log(stream);
+          var video = document.getElementById('video');
           video.src = URL.createObjectURL(stream);
           video.play();
       }, function(error) {
-          console.log(error)
+          console.log(error);
       });
     });
 
