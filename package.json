@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "start": "node dist/index.bundle.js",
     "lint": "eslint ./src",
     "dev:build": "webpack -w",
     "dev": "NODE_ENV=development nodemon dist/index.bundle.js"
