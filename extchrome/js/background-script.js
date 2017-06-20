@@ -1,7 +1,7 @@
 // this background script is used to invoke desktopCapture API
 // to capture screen-MediaStream.
 
-var screenOptions = ['screen', 'window'];
+let screenOptions = ['screen', 'window'];
 
 chrome.runtime.onConnect.addListener(function (port) {
   port.onMessage.addListener(portOnMessageHanlder);
@@ -25,9 +25,7 @@ chrome.runtime.onConnect.addListener(function (port) {
     if(!sourceId || !sourceId.length) {
       return port.postMessage('PermissionDeniedError');
     }
-    
-    // "ok" button is clicked; share "sourceId" with the
-    // content-script which will forward it to the webpage
+
     port.postMessage({
       sourceId: sourceId
     });
