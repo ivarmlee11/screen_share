@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -83,10 +83,16 @@ module.exports = require("http");
 /* 2 */
 /***/ (function(module, exports) {
 
-module.exports = require("socket.io");
+module.exports = require("peer");
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports) {
+
+module.exports = require("socket.io");
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -104,9 +110,28 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const app = (0, _express2.default)();
 
+var ExpressPeerServer = __webpack_require__(2).ExpressPeerServer;
+
 const server = _http2.default.Server(app);
 
-const io = __webpack_require__(2)(server);
+var options = {
+	debug: true,
+	allow_discovery: true
+};
+
+const peerServer = ExpressPeerServer(server, options);
+app.use('/api', peerServer);
+
+peerServer.on('connection', function (id) {
+	console.log(id);
+	console.log(server._clients);
+});
+
+peerServer.on('disconnect', function (id) {
+	console.log(id + "deconnected");
+});
+
+const io = __webpack_require__(3)(server);
 
 const PORT = process.env.PORT || 3000;
 

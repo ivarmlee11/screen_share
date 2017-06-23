@@ -18,7 +18,7 @@
      "all_frames": true,
      "run_at": "document_end",
      // "matches": ["http://localhost:3000/*"]
-     "matches": ["https://freescreenshare.herokuapp.com/*"]
+     "matches": ["http://freescreenshare.herokuapp.com/*"]
     }
   ],
   "icons" : {
