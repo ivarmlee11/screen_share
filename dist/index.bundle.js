@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -81,6 +81,12 @@ module.exports = require("http");
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports) {
+
+module.exports = require("socket.io");
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90,12 +96,56 @@ var _express = __webpack_require__(0);
 
 var _express2 = _interopRequireDefault(_express);
 
+var _http = __webpack_require__(1);
+
+var _http2 = _interopRequireDefault(_http);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const app = (0, _express2.default)();
-const server = __webpack_require__(1).Server(app);
+
+const server = _http2.default.Server(app);
+
+const io = __webpack_require__(2)(server);
 
 const PORT = process.env.PORT || 3000;
+
+let users = [];
+
+io.on('connection', client => {
+	const id = client.id;
+	console.log(`client connected ${id}`);
+	users.push(client);
+	console.log(users.length);
+
+	client.on('join', namespace => {
+		console.log(`${id} joined ${namespace}`);
+		client.join(namespace);
+	});
+
+	client.on('message', data => {
+
+		console.log(`
+			data recieved server side 
+			peerjs id ${data.peerJsId}
+			socketid ${data.socketId}
+			location ${data.location}
+		`);
+
+		// send message to client namespace
+		client.to(data.location).emit('message', {
+			'peerJsId': data.peerJsId,
+			'socketid': data.socketId
+		});
+	});
+
+	client.on('disconnect', client => {
+		console.log(`client disconnected ${id}`);
+		let i = users.indexOf(client);
+		users.splice(i, 1);
+		console.log(users.length);
+	});
+});
 
 app.use(_express2.default.static('public'));
 
@@ -103,16 +153,17 @@ app.get('/', (req, res) => {
 	res.render('/index.html');
 });
 
-app.listen(PORT, err => {
+server.listen(PORT, err => {
+
 	if (err) {
 		throw err;
 	} else {
-		// console.log(`
-		// 	server running on ${PORT}
-		// 	-----
-		// 	running on ${process.env.NODE_ENV}
-		// 	----- 
-		// `)
+		console.log(`
+			server running on ${PORT}
+			-----
+			running on ${process.env.NODE_ENV}
+			----- 
+		`);
 	}
 });
 

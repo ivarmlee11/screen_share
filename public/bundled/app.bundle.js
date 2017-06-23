@@ -74,6 +74,8 @@
 
 
 // if you want to check if chrome extension is installed and enabled
+let outStream;
+
 isChromeExtensionAvailable(isAvailable => {
   if (!isAvailable) {
     console.log('Chrome extension is either not installed or disabled.');
@@ -101,16 +103,62 @@ getSourceId(sourceId => {
         video: screen_constraints
 
       }, stream => {
-        console.log('stream');
+        console.log('outgoing stream');
         console.log(stream);
-        var video = document.getElementById('video');
-        video.src = URL.createObjectURL(stream);
+        outStream = stream;
+        let video = document.getElementById('outgoing');
+        video.src = URL.createObjectURL(outStream);
         video.play();
       }, error => {
         console.log(error);
       });
     });
   }
+});
+
+// connect to socket io 
+const socket = io();
+
+// peer js set up
+const peer = new Peer({ key: 'lwjd5qra8257b9' });
+
+const loc = window.location.pathname;
+
+peer.on('open', id => {
+
+  console.log(`
+    My peer js ID is: ${id}
+    My socket io ID is: ${socket.id}
+  `);
+
+  socket.emit('join', loc);
+
+  socket.emit('message', {
+    peerJsId: id,
+    socketId: socket.id,
+    location: loc
+  });
+});
+
+socket.on('message', data => {
+  console.log(`
+    ${data.peerJsId} connected to this page
+    attempting to call this user with peer js
+    sending media stream
+  `);
+  console.log(outStream);
+  let call = peer.call(data.peerJsId, outStream);
+});
+
+peer.on('call', call => {
+  console.log('call came in');
+  console.log(call);
+  call.answer(outStream);
+  call.on('stream', stream => {
+    let videoIn = document.getElementById('incoming');
+    videoIn.src = URL.createObjectURL(stream);
+    videoIn.play();
+  });
 });
 
 /***/ }),
