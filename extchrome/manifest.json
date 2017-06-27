@@ -17,8 +17,8 @@
      "js": ["bundled/content-script.bundle.js" ],
      "all_frames": true,
      "run_at": "document_end",
-     // "matches": ["http://localhost:3000/*"]
-     "matches": ["https://freescreenshare.herokuapp.com/*"]
+     "matches": ["http://localhost:3000/*"]
+     // "matches": ["http://freescreenshare.herokuapp.com/*"]
     }
   ],
   "icons" : {

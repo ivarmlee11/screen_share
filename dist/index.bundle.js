@@ -110,41 +110,32 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const app = (0, _express2.default)();
 
-var ExpressPeerServer = __webpack_require__(2).ExpressPeerServer;
-
 const server = _http2.default.Server(app);
-
-var options = {
-	debug: true,
-	allow_discovery: true
-};
-
-const peerServer = ExpressPeerServer(server, options);
-app.use('/api', peerServer);
-
-peerServer.on('connection', function (id) {
-	console.log(id);
-	console.log(server._clients);
-});
-
-peerServer.on('disconnect', function (id) {
-	console.log(id + "deconnected");
-});
 
 const io = __webpack_require__(3)(server);
 
 const PORT = process.env.PORT || 3000;
 
+app.use(_express2.default.static('public'));
+
+const ExpressPeerServer = __webpack_require__(2).ExpressPeerServer;
+
+const options = {
+	debug: true
+};
+
+app.use('/api', ExpressPeerServer(server, options));
+
 let users = [];
 
 io.on('connection', client => {
 	const id = client.id;
-	console.log(`client connected ${id}`);
+	console.log(`socket client connected ${id}`);
 	users.push(client);
 	console.log(users.length);
 
 	client.on('join', namespace => {
-		console.log(`${id} joined ${namespace}`);
+		console.log(`socket ${id} joined ${namespace}`);
 		client.join(namespace);
 	});
 
@@ -165,14 +156,12 @@ io.on('connection', client => {
 	});
 
 	client.on('disconnect', client => {
-		console.log(`client disconnected ${id}`);
+		console.log(`socket client disconnected ${id}`);
 		let i = users.indexOf(client);
 		users.splice(i, 1);
 		console.log(users.length);
 	});
 });
-
-app.use(_express2.default.static('public'));
 
 app.get('/', (req, res) => {
 	res.render('/index.html');

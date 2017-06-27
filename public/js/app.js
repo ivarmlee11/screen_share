@@ -46,7 +46,8 @@ getSourceId((sourceId) => {
 const socket = io();
 
 // peer js set up
-const peer = new Peer('lol', {host: 'screensharepeerjs.herokuapp', port: 9000, path: '/'});
+const peer = new Peer({key: 'lwjd5qra8257b9'});
+// const peer = new Peer('someid', {host: 'localhost', port: 9000, path: '/myapp'});
 
 const loc = window.location.pathname;
 

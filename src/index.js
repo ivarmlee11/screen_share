@@ -9,16 +9,26 @@ const io = require('socket.io')(server);
 
 const PORT = process.env.PORT || 3000;
 
+app.use(express.static('public'));
+
+const ExpressPeerServer = require('peer').ExpressPeerServer;
+
+const options = {
+	debug: true
+};
+
+app.use('/api', ExpressPeerServer(server, options));
+
 let users = [];
 
 io.on('connection', (client) => {
 	const id = client.id;
-	console.log(`client connected ${id}`);
+	console.log(`socket client connected ${id}`);
 	users.push(client);
 	console.log(users.length);
 
 	client.on('join', (namespace) => {
-		console.log(`${id} joined ${namespace}`);
+		console.log(`socket ${id} joined ${namespace}`);
 		client.join(namespace);
 	});
 
@@ -41,7 +51,7 @@ io.on('connection', (client) => {
 	});
 
 	client.on('disconnect', (client) => {
-    console.log(`client disconnected ${id}`);
+    console.log(`socket client disconnected ${id}`);
     let i = users.indexOf(client);
     users.splice(i, 1);
     console.log(users.length);
@@ -49,13 +59,12 @@ io.on('connection', (client) => {
 
 });
 
-app.use(express.static('public'));
 
 app.get('/', (req, res) => {
 	res.render('/index.html');
 });
 
-server.listen(PORT, err => {
+server.listen(PORT, (err) => {
 
 	if (err) {
 		throw err;
