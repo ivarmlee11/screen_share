@@ -3,13 +3,16 @@ import http from 'http';
 
 const app = express();
 
+app.use(express.static('public'));
+
 const server = http.Server(app);
 
 const io = require('socket.io')(server);
 
 const PORT = process.env.PORT || 3000;
 
-app.use(express.static('public'));
+
+// const peerServer = app.listen(PORT);
 
 const ExpressPeerServer = require('peer').ExpressPeerServer;
 

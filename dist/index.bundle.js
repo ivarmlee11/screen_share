@@ -110,13 +110,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const app = (0, _express2.default)();
 
+app.use(_express2.default.static('public'));
+
 const server = _http2.default.Server(app);
 
 const io = __webpack_require__(3)(server);
 
 const PORT = process.env.PORT || 3000;
 
-app.use(_express2.default.static('public'));
+// const peerServer = app.listen(PORT);
 
 const ExpressPeerServer = __webpack_require__(2).ExpressPeerServer;
 

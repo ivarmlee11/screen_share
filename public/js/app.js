@@ -41,13 +41,16 @@ getSourceId((sourceId) => {
 
   }
 });
-
+// https://github.com/Zesty-Stocking/ReelTime/issues/3
 // connect to socket io 
 const socket = io();
 
 // peer js set up
-const peer = new Peer({key: 'lwjd5qra8257b9'});
-// const peer = new Peer('someid', {host: 'localhost', port: 9000, path: '/myapp'});
+const peer = new Peer({
+  host: location.hostname,
+  port: location.port || (location.protocol === 'https:' ? 443 : 80),
+  path: '/api'
+});
 
 const loc = window.location.pathname;
 
