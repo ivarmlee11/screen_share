@@ -74,9 +74,9 @@
 
 
 // if you want to check if chrome extension is installed and enabled
-let outStream;
+var outStream = void 0;
 
-isChromeExtensionAvailable(isAvailable => {
+isChromeExtensionAvailable(function (isAvailable) {
   if (!isAvailable) {
     console.log('Chrome extension is either not installed or disabled.');
   } else {
@@ -84,13 +84,13 @@ isChromeExtensionAvailable(isAvailable => {
   }
 });
 
-getSourceId(sourceId => {
+getSourceId(function (sourceId) {
 
   console.log(`source id ${sourceId}`);
 
   if (sourceId != 'PermissionDeniedError') {
 
-    getScreenConstraints((error, screen_constraints) => {
+    getScreenConstraints(function (error, screen_constraints) {
       if (error) {
         console.log('error');
         console.log(error);
@@ -102,33 +102,33 @@ getSourceId(sourceId => {
 
         video: screen_constraints
 
-      }, stream => {
+      }, function (stream) {
         console.log('outgoing stream');
         console.log(stream);
         outStream = stream;
-        let video = document.getElementById('outgoing');
+        var video = document.getElementById('outgoing');
         video.src = URL.createObjectURL(outStream);
         video.play();
-      }, error => {
+      }, function (error) {
         console.log(error);
       });
     });
   }
 });
-// https://github.com/Zesty-Stocking/ReelTime/issues/3
+
 // connect to socket io 
-const socket = io();
+var socket = io();
 
 // peer js set up
-const peer = new Peer({
+var peer = new Peer({
   host: location.hostname,
   port: location.port || (location.protocol === 'https:' ? 443 : 80),
   path: '/api'
 });
 
-const loc = window.location.pathname;
+var loc = window.location.pathname;
 
-peer.on('open', id => {
+peer.on('open', function (id) {
 
   console.log(`
     My peer js ID is: ${id}
@@ -144,22 +144,22 @@ peer.on('open', id => {
   });
 });
 
-socket.on('message', data => {
+socket.on('message', function (data) {
   console.log(`
     ${data.peerJsId} connected to this page
     attempting to call this user with peer js
     sending media stream
   `);
   console.log(outStream);
-  let call = peer.call(data.peerJsId, outStream);
+  var call = peer.call(data.peerJsId, outStream);
 });
 
-peer.on('call', call => {
+peer.on('call', function (call) {
   console.log('call came in');
   console.log(call);
   call.answer(outStream);
-  call.on('stream', stream => {
-    let videoIn = document.getElementById('incoming');
+  call.on('stream', function (stream) {
+    var videoIn = document.getElementById('incoming');
     videoIn.src = URL.createObjectURL(stream);
     videoIn.play();
   });

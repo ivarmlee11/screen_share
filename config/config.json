@@ -1,0 +1,12 @@
+{
+  "development": {
+    "database": "screen_share_development",
+    "host": "127.0.0.1",
+    "dialect": "postgresql"
+  },
+  "test": {
+  },
+  "production": {
+    "use_env_variable": "DATABASE_URL"
+  }
+}

@@ -41,7 +41,7 @@ getSourceId((sourceId) => {
 
   }
 });
-// https://github.com/Zesty-Stocking/ReelTime/issues/3
+
 // connect to socket io 
 const socket = io();
 

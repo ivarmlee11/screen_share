@@ -64,84 +64,158 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports) {
 
-module.exports = require("express");
+module.exports = require("fs");
 
 /***/ }),
 /* 1 */
 /***/ (function(module, exports) {
 
-module.exports = require("http");
+module.exports = require("sequelize");
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = require("peer");
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module, __dirname) {
+
+var fs = __webpack_require__(0);
+var path = __webpack_require__(11);
+var Sequelize = __webpack_require__(1);
+var basename = path.basename(module.filename);
+var env = process.env.NODE_ENV || 'development';
+var config = __webpack_require__(8)[env];
+var db = {};
+
+if (config.use_env_variable) {
+  var sequelize = new Sequelize(process.env[config.use_env_variable]);
+} else {
+  var sequelize = new Sequelize(config.database, config.username, config.password, config);
+}
+
+fs.readdirSync(__dirname).filter(function (file) {
+  return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js';
+}).forEach(function (file) {
+  var model = sequelize['import'](path.join(__dirname, file));
+  db[model.name] = model;
+});
+
+Object.keys(db).forEach(function (modelName) {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+module.exports = db;
+console.log('FUCK');
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)(module), "/"))
 
 /***/ }),
 /* 3 */
 /***/ (function(module, exports) {
 
-module.exports = require("socket.io");
+module.exports = require("body-parser");
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports) {
+
+module.exports = require("express");
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+module.exports = require("http");
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = require("peer");
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+module.exports = require("socket.io");
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+module.exports = {
+	"development": {
+		"database": "screen_share_development",
+		"host": "127.0.0.1",
+		"dialect": "postgresql"
+	},
+	"test": {},
+	"production": {
+		"use_env_variable": "DATABASE_URL"
+	}
+};
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _express = __webpack_require__(0);
+var express = __webpack_require__(4);
 
-var _express2 = _interopRequireDefault(_express);
+var app = express();
 
-var _http = __webpack_require__(1);
+var http = __webpack_require__(5);
 
-var _http2 = _interopRequireDefault(_http);
+var Sequelize = __webpack_require__(1);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var db = __webpack_require__(2);
 
-const app = (0, _express2.default)();
+app.use(express.static('public'));
 
-app.use(_express2.default.static('public'));
+var bodyParser = __webpack_require__(3);
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const server = _http2.default.Server(app);
+var PORT = process.env.PORT || 3000;
 
-const io = __webpack_require__(3)(server);
+var server = http.Server(app);
 
-const PORT = process.env.PORT || 3000;
+var io = __webpack_require__(7)(server);
 
-// const peerServer = app.listen(PORT);
+var ExpressPeerServer = __webpack_require__(6).ExpressPeerServer;
 
-const ExpressPeerServer = __webpack_require__(2).ExpressPeerServer;
-
-const options = {
+var options = {
 	debug: true
 };
 
 app.use('/api', ExpressPeerServer(server, options));
 
-let users = [];
+var users = [];
 
-io.on('connection', client => {
-	const id = client.id;
-	console.log(`socket client connected ${id}`);
+io.on('connection', function (client) {
+	var id = client.id;
+	console.log(`socket io client connected with this id: ${id}`);
 	users.push(client);
 	console.log(users.length);
 
-	client.on('join', namespace => {
-		console.log(`socket ${id} joined ${namespace}`);
+	client.on('join', function (namespace) {
+		console.log(`socket io client id: ${id} joined ${namespace}`);
 		client.join(namespace);
 	});
 
-	client.on('message', data => {
+	client.on('message', function (data) {
 
 		console.log(`
 			data recieved server side 
@@ -157,19 +231,44 @@ io.on('connection', client => {
 		});
 	});
 
-	client.on('disconnect', client => {
-		console.log(`socket client disconnected ${id}`);
-		let i = users.indexOf(client);
+	client.on('disconnect', function (client) {
+
+		console.log(`socket io client ${id} disconnected ${id}`);
+		var i = users.indexOf(client);
 		users.splice(i, 1);
 		console.log(users.length);
 	});
 });
 
-app.get('/', (req, res) => {
+app.get('/', function (req, res) {
 	res.render('/index.html');
 });
 
-server.listen(PORT, err => {
+app.post('/', function (req, res) {
+	console.log(req.body);
+	console.log(db.findOrCreate);
+	console.log(db.share);
+	db.share.findOrCreate({
+		where: {
+			name: req.body.name
+		}
+	}).spread(function (share, created) {
+		if (created) {
+			var name = share.name;
+			var redirectString = `/share/${name}`;
+			res.redirect(redirectString);
+		} else {
+			res.redirect('back');
+		}
+	});
+});
+
+app.get('/share/:name', function (req, res) {
+	console.log(req.params);
+	res.render('/share.html');
+});
+
+server.listen(PORT, function (err) {
 
 	if (err) {
 		throw err;
@@ -182,6 +281,40 @@ server.listen(PORT, err => {
 		`);
 	}
 });
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+module.exports = require("path");
 
 /***/ })
 /******/ ]);

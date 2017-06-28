@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Screen Share</title>
+
+  <!-- screen capturing  -->
+  <script src="https://webrtcexperiment-webrtc.netdna-ssl.com/Screen-Capturing.js"></script>
+
+  <!-- socket io -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+
+  <!-- peerjs -->
+  <script src="/vendor/peer.js"></script>
+
+  <!-- bundled js -->
+  <script src="/bundled/app.bundle.js"></script>
+
+  <!-- main css -->
+  <link rel="stylesheet" type="text/css" href="/css/main.css" />
+
+</head>
+<body>
+
+  <div id="screens">
+    <div class="screen">
+      <video id="outgoing" controls autoplay></video>
+      <video id="incoming" controls autoplay></video>
+    </div>
+  </div>
+
+</body>
+</html>
