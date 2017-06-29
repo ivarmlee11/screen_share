@@ -71,24 +71,18 @@ module.exports =
 /* 0 */
 /***/ (function(module, exports) {
 
-module.exports = require("fs");
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
 module.exports = require("sequelize");
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(module, __dirname) {
 
-var fs = __webpack_require__(0);
-var path = __webpack_require__(11);
-var Sequelize = __webpack_require__(1);
+var fs = __webpack_require__(11);
+var path = __webpack_require__(12);
+var Sequelize = __webpack_require__(0);
 var basename = path.basename(module.filename);
 var env = process.env.NODE_ENV || 'development';
 var config = __webpack_require__(8)[env];
@@ -117,8 +111,27 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 module.exports = db;
-console.log('FUCK');
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)(module), "/"))
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function (sequelize, DataTypes) {
+  var share = sequelize.define('share', {
+    name: DataTypes.STRING
+  }, {
+    classMethods: {
+      associate: function associate(models) {
+        // associations can be defined here
+      }
+    }
+  });
+  return share;
+};
 
 /***/ }),
 /* 3 */
@@ -179,13 +192,14 @@ var app = express();
 
 var http = __webpack_require__(5);
 
-var Sequelize = __webpack_require__(1);
+var Sequelize = __webpack_require__(0);
 
-var db = __webpack_require__(2);
+var db = __webpack_require__(1);
 
-app.use(express.static('public'));
+var share = __webpack_require__(2);
 
 var bodyParser = __webpack_require__(3);
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 var PORT = process.env.PORT || 3000;
@@ -199,6 +213,10 @@ var ExpressPeerServer = __webpack_require__(6).ExpressPeerServer;
 var options = {
 	debug: true
 };
+
+app.set('view engine', 'ejs');
+
+app.use(express.static('public'));
 
 app.use('/api', ExpressPeerServer(server, options));
 
@@ -241,14 +259,12 @@ io.on('connection', function (client) {
 });
 
 app.get('/', function (req, res) {
-	res.render('/index.html');
+	res.render('index');
 });
 
 app.post('/', function (req, res) {
 	console.log(req.body);
-	console.log(db.findOrCreate);
-	console.log(db.share);
-	db.share.findOrCreate({
+	db.shareDb.findOrCreate({
 		where: {
 			name: req.body.name
 		}
@@ -263,9 +279,12 @@ app.post('/', function (req, res) {
 	});
 });
 
+app.get('/shared/:sharelink', function (req, res) {
+	res.render('sharesplash', { shared: req.params.sharelink });
+});
+
 app.get('/share/:name', function (req, res) {
-	console.log(req.params);
-	res.render('/share.html');
+	res.render('share');
 });
 
 server.listen(PORT, function (err) {
@@ -312,6 +331,12 @@ module.exports = function(module) {
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports) {
+
+module.exports = require("fs");
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = require("path");

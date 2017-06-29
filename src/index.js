@@ -10,10 +10,11 @@ const Sequelize = require('sequelize');
 
 const db = require('../models');
 
-app.use(express.static('public'));
+const share = require('../models/share');
 
 const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 3000;
 
@@ -26,6 +27,10 @@ const ExpressPeerServer = require('peer').ExpressPeerServer;
 const options = {
 	debug: true
 };
+
+app.set('view engine', 'ejs');
+
+app.use(express.static('public'));
 
 app.use('/api', ExpressPeerServer(server, options));
 
@@ -71,13 +76,11 @@ io.on('connection', (client) => {
 });
 
 app.get('/', (req, res) => {
-	res.render('/index.html');
+	res.render('index');
 });
 
 app.post('/', (req, res) => {
 	console.log(req.body);
-	console.log(db.findOrCreate)
-	console.log(db.share)
 	db.share.findOrCreate({
 	  where: {
 	    name: req.body.name
@@ -93,9 +96,12 @@ app.post('/', (req, res) => {
 	});
 });
 
+app.get('/shared/:sharelink', (req, res) => {
+	res.render('sharesplash', {shared: req.params.sharelink });
+});
+
 app.get('/share/:name', (req, res) => {
-	console.log(req.params)
-	res.render('/share.html');
+	res.render('share');
 })
 
 server.listen(PORT, (err) => {

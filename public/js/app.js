@@ -74,7 +74,7 @@ peer.on('open', (id) => {
 
 socket.on('message', (data) => {
   console.log(`
-    ${data.peerJsId} connected to this page
+    ${data.peerJsId} connected to this page...
     attempting to call this user with peer js
     sending media stream
   `);
